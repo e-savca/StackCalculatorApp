@@ -43,7 +43,7 @@ public static class Extensions
                 }
                 tokens.Add(new Token(sb.ToString(), TokenType.Number));
             }
-            else if ("+*".Contains(c))
+            else if ("+*/".Contains(c))
             {
                 tokens.Add(new Token(c.ToString(), TokenType.Operator));
             }
@@ -79,34 +79,34 @@ public static class Extensions
             {
                 tokens.Add(new Token(c.ToString(), TokenType.Operator));
             }
-            else if (c == '/')
-            {
-                // Check if the divide sign is before a negative number in parentheses
-                bool isNegative = false;
-                int j = i + 1;
-                while (j < chars.Length && chars[j] == ' ')
-                {
-                    j++;
-                }
-                if (j < chars.Length && chars[j] == '-')
-                {
-                    isNegative = true;
-                }
+            //else if (c == '/')
+            //{
+            //    // Check if the divide sign is before a negative number in parentheses
+            //    bool isNegative = false;
+            //    int j = i + 1;
+            //    while (j < chars.Length && chars[j] == ' ')
+            //    {
+            //        j++;
+            //    }
+            //    if (j < chars.Length && chars[j] == '-')
+            //    {
+            //        isNegative = true;
+            //    }
 
-                if (i > 0 && chars[i - 1] == ')' && isNegative)
-                {
-                    // If the divide sign is before a negative number in parentheses, create a multiplication token instead
-                    tokens.Add(new Token("*", TokenType.Operator));
-                    tokens.Add(new Token("-1", TokenType.Number));
+            //    if (i > 0 && chars[i - 1] == ')' && isNegative)
+            //    {
+            //        // If the divide sign is before a negative number in parentheses, create a multiplication token instead
+            //        tokens.Add(new Token("*", TokenType.Operator));
+            //        tokens.Add(new Token("-1", TokenType.Number));
 
-                    // Skip the negative sign and whitespace
-                    i++;
-                }
-                else
-                {
-                    tokens.Add(new Token(c.ToString(), TokenType.Operator));
-                }
-            }
+            //        // Skip the negative sign and whitespace
+            //        i++;
+            //    }
+            //    else
+            //    {
+            //        tokens.Add(new Token(c.ToString(), TokenType.Operator));
+            //    }
+            //}
             else if (c == '(')
             {
                 tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
