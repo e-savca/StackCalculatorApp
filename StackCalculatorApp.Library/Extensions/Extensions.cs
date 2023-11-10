@@ -12,7 +12,7 @@ public static class Extensions
     }
     public static bool IsParenthesis(this string tokenValue)
     {
-        return tokenValue == "(" || tokenValue == ")";  
+        return tokenValue == "(" || tokenValue == ")";
     }
     public static bool IsValidCharacter(this char keyChar) => "0123456789/*-+()".Contains(keyChar);
 
@@ -35,44 +35,49 @@ public static class Extensions
                 sb.Append(c);
 
                 // Keep parsing digits until we reach the end of the number
-                while (i + 1 < chars.Length && (char.IsDigit(chars[i + 1]) || chars[i + 1] == '.'))
+                //while (i + 1 < chars.Length && (char.IsDigit(chars[i + 1]) || chars[i + 1] == '.'))
+                while (i + 1 < chars.Length && char.IsDigit(chars[i + 1]))
                 {
                     sb.Append(chars[i + 1]);
                     i++;
                 }
-
-                tokens.Add(new Token(TokenType.Number, sb.ToString()));
+                tokens.Add(new Token(sb.ToString(), TokenType.Number));
             }
-            else if (c == '+')
+            else if ("+*".Contains(c))
             {
-                tokens.Add(new Token(TokenType.Operator, c.ToString()));
+                tokens.Add(new Token(c.ToString(), TokenType.Operator));
             }
             else if (c == '-')
             {
                 // Check if the minus sign is a negative number or a subtraction operator
-                if (i + 1 < chars.Length && char.IsDigit(chars[i + 1]))
+                if (chars[i - 1].ToString().IsMathOperator() && i + 1 < chars.Length && char.IsDigit(chars[i + 1]))
                 {
                     // If the next character is a digit, parse the negative number and create a number token
                     StringBuilder sb = new StringBuilder();
                     sb.Append(c);
 
                     // Keep parsing digits until we reach the end of the number
-                    while (i + 1 < chars.Length && (char.IsDigit(chars[i + 1]) || chars[i + 1] == '.'))
+                    //while (i + 1 < chars.Length && (char.IsDigit(chars[i + 1]) || chars[i + 1] == '.'))
+                    while (i + 1 < chars.Length && char.IsDigit(chars[i + 1]))
                     {
                         sb.Append(chars[i + 1]);
                         i++;
                     }
 
-                    tokens.Add(new Token(TokenType.Number, sb.ToString()));
+                    tokens.Add(new Token(sb.ToString(), TokenType.Number));
                 }
+                //else if ()
+                //{
+
+                //}
                 else
                 {
-                    tokens.Add(new Token(TokenType.Operator, c.ToString()));
+                    tokens.Add(new Token(c.ToString(), TokenType.Operator));
                 }
             }
             else if (c == '*')
             {
-                tokens.Add(new Token(TokenType.Operator, c.ToString()));
+                tokens.Add(new Token(c.ToString(), TokenType.Operator));
             }
             else if (c == '/')
             {
@@ -91,24 +96,24 @@ public static class Extensions
                 if (i > 0 && chars[i - 1] == ')' && isNegative)
                 {
                     // If the divide sign is before a negative number in parentheses, create a multiplication token instead
-                    tokens.Add(new Token(TokenType.Operator, "*"));
-                    tokens.Add(new Token(TokenType.Number, "-1"));
+                    tokens.Add(new Token("*", TokenType.Operator));
+                    tokens.Add(new Token("-1", TokenType.Number));
 
                     // Skip the negative sign and whitespace
-                    i += 2;
+                    i++;
                 }
                 else
                 {
-                    tokens.Add(new Token(TokenType.Operator, c.ToString()));
+                    tokens.Add(new Token(c.ToString(), TokenType.Operator));
                 }
             }
             else if (c == '(')
             {
-                tokens.Add(new Token(TokenType.LeftParenthesis, c.ToString()));
+                tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
             }
             else if (c == ')')
             {
-                tokens.Add(new Token(TokenType.RightParenthesis, c.ToString()));
+                tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
             }
         }
 
