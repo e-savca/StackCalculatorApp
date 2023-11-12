@@ -19,25 +19,25 @@ class ConsoleHandler : IUserInputHandler
         while (keepGoing)
         {
             var key = Console.ReadKey();
-            switch (key.KeyChar)
-            {
-                case '\r':
+            switch (key.Key)
+            {             
+                case ConsoleKey.Enter:
                     Undo();
                     keepGoing = false;
                     break;
 
-                case '\b':
+                case ConsoleKey.Backspace:                    
                     if (Expression.Length > 0)
                         Expression = Expression.Remove(Expression.Length - 1);
                     Undo();
                     break;
-                case '(':
-                    if (Expression.Length > 0 && Expression.Last() == '-' && (Expression.Reverse().Skip(1).First().ToString() ?? " ").IsMathOperator())
-                    {
-                        Expression += "1*";
-                    }
-                    Undo();
-                    break;
+                // case ConsoleKey.: 
+                //     if (Expression.Length > 0 && Expression.Last() == '-' && (Expression.Reverse().Skip(1).First().ToString() ?? " ").IsMathOperator())
+                //     {
+                //         Expression += "1*(";
+                //     }
+                //     Undo();
+                //     break;
                 default:
                     if (key.KeyChar.IsValidCharacter())
                     {

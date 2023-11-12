@@ -1,4 +1,5 @@
 ﻿using StackCalculatorApp.Library.Extensions;
+using StackCalculatorApp.Library.Models;
 
 namespace StackCalculatorApp.Library.Services;
 
@@ -19,50 +20,42 @@ class StackCalculatorService
         { ")", "(" }
     };
 
-    public double EvaluateExpression(string expression)
+    public double EvaluateExpression(List<Token> expression)
     {
         stack.Clear();
         operatorStack.Clear();
 
-        string[] tokens = expression.Split(' ');
-
-        foreach (string token in tokens)
+        foreach (var token in expression)
         {
-            if (double.TryParse(token, out double operand))
+            if (token.Type == TokenType.Number)
             {
-                stack.Push(operand);
+                stack.Push(Convert.ToDouble(token.Value));
             }
-            else if (token.IsMathOperator())
+            else if (token.Type == TokenType.Operator)
             {
-                if (operatorStack.Count() > 0)
-                {
-                    if (IsAPriority(token))
-                        operatorStack.Push(token);
-                    else
-                    {
-                        while (!IsAPriority(token))
-                        {
-                            PerformOperation();
-                        }
-
-                        operatorStack.Push(token);
-                    }
-                }
+                if (IsAPriority(token.Value))
+                    operatorStack.Push(token.Value);
                 else
-                    operatorStack.Push(token);
+                {
+                    while (!IsAPriority(token.Value))
+                    {
+                        PerformOperation();
+                    }
+                    operatorStack.Push(token.Value);
+                }
             }
-            else if (token == "(")
-                operatorStack.Push(token);
-            else if (token == ")")
+            else if (token.Value == "(")
+                operatorStack.Push(token.Value);
+            else if (token.Value == ")")
             {
-                while (operatorStack.Peek() != parentheses[token])
+                while (operatorStack.Peek() != parentheses[token.Value])
                 {
                     PerformOperation();
                 }
                 operatorStack.Pop();
             }
             else
-                throw new ArgumentException("Troubles while TryParsing token: " + token);
+                throw new ArgumentException("Troubles while TryParsing token: " + token.Value);
         }
 
         while (operatorStack.Count() > 0)
@@ -72,7 +65,7 @@ class StackCalculatorService
 
     private bool IsAPriority(string currentOp)
     {
-        if (currentOp.IsParenthesis() || operatorStack.Count == 0 || operatorStack.Peek() == "(")
+        if (operatorStack.Count == 0 || operatorStack.Peek() == "(")
             return true;
 
         var prevOperator = priorities[operatorStack.Peek()];

@@ -17,8 +17,15 @@ public class Token
     }
     public Token(string value = "", TokenType type = TokenType.Invalid)
     {
-        Type = type;
-        _value = value;
+        if(type == TokenType.Invalid){            
+            _value = value;
+            DetermineTokenType();
+        }else{
+            Type = type;
+            _value = value;
+            
+        }
+        
     }
     private void DetermineTokenType()
     {

@@ -6,16 +6,18 @@ namespace StackCalculatorApp.Library;
 
 public class StackCalculator
 {
-    private readonly StackCalculator _stackCalculator;
+    private readonly StackCalculatorService _stackCalculator;
     private readonly IUserInputHandler _userInputHandler;
     public StackCalculator()
     {
-        _stackCalculator = new StackCalculator();
+        _stackCalculator = new StackCalculatorService();
         _userInputHandler = new ConsoleHandler();
     }
     public void Start()
     {
         var expression = _userInputHandler.GetExpression().TokenizeExpression();
+        var result = _stackCalculator.EvaluateExpression(expression);
+        Console.WriteLine($"\nResult: {result}");
 
     }
 }
