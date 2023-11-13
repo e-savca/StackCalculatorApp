@@ -31,6 +31,14 @@ public static class Extensions
             if (char.IsDigit(c))
             {
                 sb.Clear();
+                if (
+                    tokens.LastOrDefault()?.Type == TokenType.Number
+                    && tokens.LastOrDefault()?.Value.IsMathOperator() == true
+                )
+                {
+                    sb.Append(tokens.Last().Value);
+                    tokens.RemoveAt(tokens.Count - 1);
+                }
                 while (char.IsDigit(c))
                 {
                     sb.Append(c);
@@ -42,19 +50,55 @@ public static class Extensions
             }
             else if (c == '-')
             {
-                if (i == 0 || tokens.Last().Type == TokenType.Operator || tokens.Last().Type == TokenType.Parenthesis)
+                if (
+                    (
+                        i == 0
+                        || (
+                            tokens.LastOrDefault()?.Type == TokenType.Operator
+                            || tokens.LastOrDefault()?.Type == TokenType.Parenthesis
+                        )
+                            && expression[i + 1] == '('
+                    )
+                    || (
+                        i > 0
+                        && tokens.LastOrDefault()?.Type == TokenType.Operator
+                        && expression[i + 1] == '('
+                    )
+                )
+                {
+                    tokens.Add(new Token("-1", TokenType.Number));
+                    tokens.Add(new Token("*", TokenType.Operator));
+                }
+                else if (
+                    i == 0
+                    || tokens.LastOrDefault()?.Type == TokenType.Operator
+                    || tokens.LastOrDefault()?.Type == TokenType.Parenthesis
+                )
                 {
                     sb.Clear();
                     sb.Append(c);
+                    tokens.Add(new Token(sb.ToString(), TokenType.Number));
                 }
                 else
                 {
                     tokens.Add(new Token("-", TokenType.Operator));
                 }
             }
-            else
-            {                
+            else if (c == '(' || c == ')')
+            {
+                if(tokens.Last().Value == ")" && c == '(')
+                {
+                    tokens.Add(new Token("*", TokenType.Operator));
+                }
+                tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
+            }
+            else if (c == '*' || c == '/' || c == '+')
+            {
                 tokens.Add(new Token(c.ToString(), TokenType.Operator));
+            }
+            else
+            {
+                throw new ArgumentException("Invalid character in expression: " + c);
             }
         }
 

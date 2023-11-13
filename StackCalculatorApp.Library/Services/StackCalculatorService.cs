@@ -3,11 +3,11 @@ using StackCalculatorApp.Library.Models;
 
 namespace StackCalculatorApp.Library.Services;
 
-class StackCalculatorService
+public class StackCalculatorService
 {
-    private Stack<double> stack = new Stack<double>();
-    private Stack<string> operatorStack = new Stack<string>();
-    private readonly Dictionary<string, int> priorities = new Dictionary<string, int>()
+    private Stack<double> _stack = new Stack<double>();
+    private Stack<string> _operatorStack = new Stack<string>();
+    private readonly Dictionary<string, int> _priorities = new Dictionary<string, int>()
     {
         { "+", 1 },
         { "-", 1 },
@@ -22,55 +22,66 @@ class StackCalculatorService
 
     public double EvaluateExpression(List<Token> expression)
     {
-        stack.Clear();
-        operatorStack.Clear();
+        _stack.Clear();
+        _operatorStack.Clear();
+        //foreach (var e in expression)
+        //{
+        //    Console.Write(" " + e.Value);
+        //}
 
         foreach (var token in expression)
         {
             if (token.Type == TokenType.Number)
             {
-                stack.Push(Convert.ToDouble(token.Value));
+                _stack.Push(Convert.ToDouble(token.Value));
             }
             else if (token.Type == TokenType.Operator)
             {
                 if (IsAPriority(token.Value))
-                    operatorStack.Push(token.Value);
+                    _operatorStack.Push(token.Value);
                 else
                 {
                     while (!IsAPriority(token.Value))
                     {
                         PerformOperation();
                     }
-                    operatorStack.Push(token.Value);
+                    _operatorStack.Push(token.Value);
                 }
             }
             else if (token.Value == "(")
-                operatorStack.Push(token.Value);
+                _operatorStack.Push(token.Value);
             else if (token.Value == ")")
             {
-                while (operatorStack.Peek() != parentheses[token.Value])
+                while (_operatorStack.Count() > 0 && _operatorStack.Peek() != "(")
                 {
                     PerformOperation();
                 }
-                operatorStack.Pop();
+                if (_operatorStack.Count() == 0)
+                {
+                    throw new ArgumentException("Mismatched parentheses");
+                }
+
+                _operatorStack.Pop();
             }
             else
-                throw new ArgumentException("Troubles while TryParsing token: " + token.Value);
+                throw new ArgumentException("Invalid character in expression: " + token.Value);
         }
 
-        while (operatorStack.Count() > 0)
+        while (_operatorStack.Count() > 0)
             PerformOperation();
-        return stack.Pop();
+        if (_stack.Count() == 0)
+            throw new ArgumentException("Stack empty");
+        return _stack.Pop();
     }
 
     private bool IsAPriority(string currentOp)
     {
-        if (operatorStack.Count == 0 || operatorStack.Peek() == "(")
+        if (_operatorStack.Count == 0 || _operatorStack.Peek() == "(")
             return true;
 
-        var prevOperator = priorities[operatorStack.Peek()];
-        var currentOperator = priorities[currentOp];
-        if (currentOperator > prevOperator)
+        var prevOperator = _priorities[_operatorStack.Peek()];
+        var currentOperator = _priorities[currentOp];
+        if (currentOperator >= prevOperator)
         {
             return true;
         }
@@ -80,35 +91,42 @@ class StackCalculatorService
 
     private void PerformOperation()
     {
-        double operand2 = stack.Pop();
-        if (operand2 == 0)
-            throw new DivideByZeroException();
-        double operand1 = stack.Pop();
-
-        string operatorSymbol = operatorStack.Pop();
-        switch (operatorSymbol)
+        try
         {
-            case "+":
-                stack.Push(operand1 + operand2);
-                break;
-            case "-":
-                stack.Push(operand1 - operand2);
-                break;
-            case "*":
-                stack.Push(operand1 * operand2);
-                break;
-            case "/":
-                stack.Push(operand1 / operand2);
-                break;
-            default:
-                throw new ArgumentException(
-                    "Troubles with operatorSymbol: "
-                        + operatorSymbol
-                        + "\nAnd operands: "
-                        + operand1
-                        + " & "
-                        + operand2
-                );
+            double operand2 = _stack.Pop();
+            double operand1 = _stack.Pop();
+
+            string operatorSymbol = _operatorStack.Pop();
+            switch (operatorSymbol)
+            {
+                case "+":
+                    _stack.Push(operand1 + operand2);
+                    break;
+                case "-":
+                    _stack.Push(operand1 - operand2);
+                    break;
+                case "*":
+                    _stack.Push(operand1 * operand2);
+                    break;
+                case "/":
+                    if (operand2 == 0)
+                        throw new DivideByZeroException();
+                    _stack.Push(operand1 / operand2);
+                    break;
+                default:
+                    throw new ArgumentException(
+                        "Troubles with operatorSymbol: "
+                            + operatorSymbol
+                            + "\nAnd operands: "
+                            + operand1
+                            + " & "
+                            + operand2
+                    );
+            }
+        }
+        catch (Exception)
+        {
+            throw new Exception("Enter a valid expression!");
         }
     }
 }
