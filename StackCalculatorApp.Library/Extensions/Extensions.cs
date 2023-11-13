@@ -90,6 +90,10 @@ public static class Extensions
                 {
                     tokens.Add(new Token("*", TokenType.Operator));
                 }
+                if(tokens.Last().Type == TokenType.Number && c == '(')
+                {
+                    tokens.Add(new Token("*", TokenType.Operator));
+                }
                 tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
             }
             else if (c == '*' || c == '/' || c == '+')
