@@ -44,4 +44,16 @@ public class Token
             Type = TokenType.Parenthesis;
         }
     }
+    public override bool Equals(object? obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        Token other = (Token)obj;
+
+        return Value == other.Value && Type == other.Type;
+    }
+
 }

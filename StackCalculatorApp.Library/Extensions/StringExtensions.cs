@@ -5,7 +5,7 @@ using StackCalculatorApp.Library.Models;
 
 namespace StackCalculatorApp.Library.Extensions;
 
-public static class Extensions
+public static class StringExtensions
 {
     public static bool IsMathOperator(this string tokenValue)
     {
@@ -21,6 +21,8 @@ public static class Extensions
 
     public static List<Token> TokenizeExpression(this string expression)
     {
+        if(expression  is null)
+            throw new NullReferenceException("Expression is null");
         List<Token> tokens = new List<Token>();
         StringBuilder sb = new StringBuilder();
 

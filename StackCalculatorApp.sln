@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackCalculatorApp.Client", "StackCalculatorApp\StackCalculatorApp.Client.csproj", "{44E14542-C141-4F79-AF94-FA92947C8037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackCalculatorApp.Client", "StackCalculatorApp\StackCalculatorApp.Client.csproj", "{44E14542-C141-4F79-AF94-FA92947C8037}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackCalculatorApp.Library", "StackCalculatorApp.Library\StackCalculatorApp.Library.csproj", "{0E999816-3E68-4E3F-9E36-90242B5EF4D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackCalculatorApp.Library", "StackCalculatorApp.Library\StackCalculatorApp.Library.csproj", "{0E999816-3E68-4E3F-9E36-90242B5EF4D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackCalculatorApp.LibraryTests", "StackCalculatorApp.LibraryTests\StackCalculatorApp.LibraryTests.csproj", "{1650128B-9C88-4DAD-9A07-D5ACB83E56F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0E999816-3E68-4E3F-9E36-90242B5EF4D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E999816-3E68-4E3F-9E36-90242B5EF4D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E999816-3E68-4E3F-9E36-90242B5EF4D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1650128B-9C88-4DAD-9A07-D5ACB83E56F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1650128B-9C88-4DAD-9A07-D5ACB83E56F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1650128B-9C88-4DAD-9A07-D5ACB83E56F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1650128B-9C88-4DAD-9A07-D5ACB83E56F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
