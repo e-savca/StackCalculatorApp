@@ -13,14 +13,55 @@ namespace StackCalculatorApp.Library.Extensions.Tests
     public class StringExtensionsTests
     {
         [TestMethod()]
-        public void IsMathOperatorTest()
+        [DataRow("+")]
+        [DataRow("-")]
+        [DataRow("*")]
+        [DataRow("/")]
+        public void IsMathOperator_ValidOperator_ReturnsTrue(string value)
         {
-            Assert.Fail();
+            // act
+            var result = value.IsMathOperator();
+            // assert
+            Assert.IsTrue(result, "should be true");
         }
+
         [TestMethod()]
-        public void IsParenthesisTest()
+        [DataRow("%")]
+        [DataRow("^")]
+        [DataRow("<<")]
+        [DataRow(">>")]
+        public void IsMathOperatorTest_WithInvalidOperators_ReturnsFalse(string value)
         {
-            Assert.Fail();
+            // act
+            var result = value.IsMathOperator();
+            // assert
+            Assert.IsFalse(result, "should be false");
+        }
+
+        [TestMethod()]
+        [DataRow("")]
+        [DataRow(" ")]
+        [DataRow("a")]
+        [DataRow("1")]
+        [DataRow("(")]
+        [DataRow(")")]
+        public void IsMathOperatorTest_WithInvalidValues_ReturnsFalse(string value)
+        {
+            // act
+            var result = value.IsMathOperator();
+            // assert
+            Assert.IsFalse(result, "should be false");
+        }
+
+        [TestMethod()]
+        [DataRow("(")]
+        [DataRow(")")]
+        public void IsParenthesisTest(string value)
+        {
+            // act
+            var result = value.IsParenthesis();
+            // assert
+            Assert.IsTrue(result, "should be true");
         }
         [TestMethod]
         public void TokenizeExpression_WhenCalled_ReturnsListOfTokens()
@@ -91,9 +132,9 @@ namespace StackCalculatorApp.Library.Extensions.Tests
             {
                 new Token("1", TokenType.Number),
                 new Token("+", TokenType.Operator),
-                new Token("-1", TokenType.Number),
-                new Token("*", TokenType.Operator),
-                new Token("2", TokenType.Number),
+                new Token("(", TokenType.Parenthesis),
+                new Token("-2", TokenType.Number),
+                new Token(")", TokenType.Parenthesis),
                 new Token("*", TokenType.Operator),
                 new Token("3", TokenType.Number),
                 new Token("-", TokenType.Operator),
@@ -118,6 +159,31 @@ namespace StackCalculatorApp.Library.Extensions.Tests
 
             // Act
             List<Token> actual = expression.TokenizeExpression();
+        }
+
+        [TestMethod()]
+        [DataRow('1')]
+        [DataRow('2')]
+        [DataRow('3')]
+        [DataRow('4')]
+        [DataRow('5')]
+        [DataRow('6')]
+        [DataRow('7')]
+        [DataRow('8')]
+        [DataRow('9')]
+        [DataRow('0')]
+        [DataRow('+')]
+        [DataRow('-')]
+        [DataRow('*')]
+        [DataRow('/')]
+        [DataRow('(')]
+        [DataRow(')')]
+        public void IsValidCharacter_ReturnsTrueForValidCharacters(char value)
+        {
+            // act
+            var result = value.IsValidCharacter();
+            // assert
+            Assert.IsTrue(result, "should be true");
         }
     }
 }

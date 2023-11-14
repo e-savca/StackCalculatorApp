@@ -21,7 +21,7 @@ public static class StringExtensions
 
     public static List<Token> TokenizeExpression(this string expression)
     {
-        if(expression  is null)
+        if (expression is null)
             throw new NullReferenceException("Expression is null");
         List<Token> tokens = new List<Token>();
         StringBuilder sb = new StringBuilder();
@@ -86,16 +86,19 @@ public static class StringExtensions
                     tokens.Add(new Token("-", TokenType.Operator));
                 }
             }
-            else if (c == '(' || c == ')')
+            else if (c == '(')
             {
-                if(tokens.Last().Value == ")" && c == '(')
+                if (
+                    tokens.Any()
+                    && (tokens.Last().Value == ")" || tokens.Last().Type == TokenType.Number)
+                )
                 {
                     tokens.Add(new Token("*", TokenType.Operator));
                 }
-                if(tokens.Last().Type == TokenType.Number && c == '(')
-                {
-                    tokens.Add(new Token("*", TokenType.Operator));
-                }
+                tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
+            }
+            else if (c == ')')
+            {
                 tokens.Add(new Token(c.ToString(), TokenType.Parenthesis));
             }
             else if (c == '*' || c == '/' || c == '+')
