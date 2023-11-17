@@ -124,6 +124,10 @@ public class StackCalculatorService
                     );
             }
         }
+        catch (DivideByZeroException)
+        {
+            throw new DivideByZeroException("DivideByZeroException");
+        }
         catch (Exception)
         {
             throw new Exception("Enter a valid expression!");
