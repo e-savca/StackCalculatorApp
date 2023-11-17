@@ -2,17 +2,22 @@
 using StackCalculatorApp.Library.Extensions;
 using StackCalculatorApp.Library.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace StackCalculatorApp.Library.Extensions.Tests
-{
-    [TestClass()]
+{    
+    [TestClass]
     public class StringExtensionsTests
     {
-        [TestMethod()]
+        #region IsMathOperatorTests
+
+        [TestMethod]
         [DataRow("+")]
         [DataRow("-")]
         [DataRow("*")]
@@ -22,10 +27,10 @@ namespace StackCalculatorApp.Library.Extensions.Tests
             // act
             var result = value.IsMathOperator();
             // assert
-            Assert.IsTrue(result, "should be true");
+            Assert.IsTrue(result);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [DataRow("%")]
         [DataRow("^")]
         [DataRow("<<")]
@@ -35,10 +40,10 @@ namespace StackCalculatorApp.Library.Extensions.Tests
             // act
             var result = value.IsMathOperator();
             // assert
-            Assert.IsFalse(result, "should be false");
+            Assert.IsFalse(result);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [DataRow("")]
         [DataRow(" ")]
         [DataRow("a")]
@@ -50,23 +55,30 @@ namespace StackCalculatorApp.Library.Extensions.Tests
             // act
             var result = value.IsMathOperator();
             // assert
-            Assert.IsFalse(result, "should be false");
+            Assert.IsFalse(result);
         }
 
-        [TestMethod()]
+        #endregion
+
+        #region IsParenthesisTests
+        [TestMethod]
         [DataRow("(")]
         [DataRow(")")]
-        public void IsParenthesisTest(string value)
+        public void IsParenthesis_ValidParenthesis_ReturnsTrue(string value)
         {
             // act
             var result = value.IsParenthesis();
             // assert
-            Assert.IsTrue(result, "should be true");
+            Assert.IsTrue(result);
         }
+        #endregion
+
+        #region TokenizeExpressionTests
+
         [TestMethod]
         public void TokenizeExpression_WhenCalled_ReturnsListOfTokens()
         {
-            // Arrange
+            // Assume
             string expression = "1+2*3-4/5";
             List<Token> expected = new List<Token>()
             {
@@ -87,19 +99,21 @@ namespace StackCalculatorApp.Library.Extensions.Tests
             // Assert
             CollectionAssert.AreEqual(expected, actual);
         }
+
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
-        public void TokenizeExpression_WhenCalledWithNullString()
+        public void TokenizeExpression_WhenCalledWithNullString_ThrowsNullReferenceException()
         {
-            // Arrange
-            string expression = null;
-            // Act
-            List<Token> actual = expression!.TokenizeExpression();
+            // Assume
+            string? expression = null;
+
+            // Act & Assert
+            Assert.ThrowsException<NullReferenceException>(() => expression!.TokenizeExpression());
         }
+
         [TestMethod]
         public void TokenizeExpression_WhenCalledWithParenthesis_ReturnsListOfTokens()
         {
-            // Arrange
+            // Assume
             string expression = "(1+2)*3-4/5";
             List<Token> expected = new List<Token>()
             {
@@ -126,7 +140,7 @@ namespace StackCalculatorApp.Library.Extensions.Tests
         [TestMethod]
         public void TokenizeExpression_WhenCalledWithNegativeNumber_ReturnsListOfTokens()
         {
-            // Arrange
+            // Assume
             string expression = "1+(-2)*3-4/5";
             List<Token> expected = new List<Token>()
             {
@@ -151,17 +165,20 @@ namespace StackCalculatorApp.Library.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TokenizeExpression_WhenCalledWithInvalidCharacter_ThrowsArgumentException()
         {
-            // Arrange
+            // Assume
             string expression = "1+2*3-4/5^";
 
-            // Act
-            List<Token> actual = expression.TokenizeExpression();
+            // Act & Assert
+            Assert.ThrowsException<ArgumentException>(() => expression.TokenizeExpression());
         }
 
-        [TestMethod()]
+        #endregion
+
+        #region IsValidCharacterTests
+
+        [TestMethod]
         [DataRow('1')]
         [DataRow('2')]
         [DataRow('3')]
@@ -183,7 +200,46 @@ namespace StackCalculatorApp.Library.Extensions.Tests
             // act
             var result = value.IsValidCharacter();
             // assert
-            Assert.IsTrue(result, "should be true");
+            Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        [DataRow('a')]
+        [DataRow('!')]
+        [DataRow('@')]
+        [DataRow('#')]
+        [DataRow('$')]
+        [DataRow('%')]
+        [DataRow('^')]
+        [DataRow('&')]
+        [DataRow('_')]
+        [DataRow('=')]
+        [DataRow('`')]
+        [DataRow('~')]
+        [DataRow('{')]
+        [DataRow('}')]
+        [DataRow('[')]
+        [DataRow(']')]
+        [DataRow('\\')]
+        [DataRow('|')]
+        [DataRow(':')]
+        [DataRow(';')]
+        [DataRow('"')]
+        [DataRow('\'')]
+        [DataRow('<')]
+        [DataRow('>')]
+        [DataRow(',')]
+        [DataRow('.')]
+        [DataRow('?')]
+        public void IsValidCharacter_ReturnsFalseForInvalidCharacters(char value)
+        {
+            // act
+            var result = value.IsValidCharacter();
+            // assert
+            Assert.IsFalse(result);
+        }
+
+        #endregion
     }
 }
+

@@ -24,10 +24,6 @@ public class StackCalculatorService
     {
         _stack.Clear();
         _operatorStack.Clear();
-        //foreach (var e in expression)
-        //{
-        //    Console.Write(" " + e.Value);
-        //}
 
         foreach (var token in expression)
         {
@@ -56,7 +52,7 @@ public class StackCalculatorService
                 {
                     PerformOperation();
                 }
-                if (_operatorStack.Count() == 0)
+                if (_operatorStack.All(x => x == "(" || x == ")"))
                 {
                     throw new ArgumentException("Mismatched parentheses");
                 }
@@ -127,6 +123,22 @@ public class StackCalculatorService
         catch (DivideByZeroException)
         {
             throw new DivideByZeroException("DivideByZeroException");
+        }
+        catch(ArgumentException)
+        {
+            throw new ArgumentException("ArgumentException");
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException("InvalidOperationException");
+        }
+        catch (FormatException)
+        {
+            throw new FormatException("FormatException");
+        }
+        catch (OverflowException)
+        {
+            throw new OverflowException("OverflowException");
         }
         catch (Exception)
         {
